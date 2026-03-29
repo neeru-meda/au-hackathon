@@ -317,16 +317,37 @@ export default function LettersScreen() {
 
                 <Text style={styles.docTitle}>{documentType.toUpperCase()}</Text>
 
-                <View style={styles.studentInfoBox}>
-                  <Text style={styles.studentInfoText}>
-                    <Text style={styles.bold}>Student:</Text> {letterData.student.name}
-                    {'\n'}
-                    <Text style={styles.bold}>Roll No:</Text> {letterData.student.rollNo}
-                    {'\n'}
-                    <Text style={styles.bold}>Class:</Text> {letterData.student.className}
-                    {'\n'}
-                    <Text style={styles.bold}>Course:</Text> {letterData.student.course}
-                  </Text>
+                <View style={styles.contentBox}>
+                  {documentType === 'Bonafide Certificate' && (
+                    <Text style={styles.contentText}>
+                      This is to certify that <Text style={styles.bold}>{letterData.student.name}</Text>, bearing regd. No. <Text style={styles.bold}>{letterData.student.rollNo}</Text> is a bonafide student of <Text style={styles.bold}>{letterData.student.course}</Text>, II-Semester in the Dept. of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam during the academic year <Text style={styles.bold}>2025-26</Text>.
+                      {'\n\n'}
+                      This certificate is issued at the request of the student for official purposes.
+                    </Text>
+                  )}
+                  {documentType === 'Study Certificate' && (
+                    <Text style={styles.contentText}>
+                      This is to certify that <Text style={styles.bold}>{letterData.student.name}</Text>, bearing regd. No. <Text style={styles.bold}>{letterData.student.rollNo}</Text> has been studying <Text style={styles.bold}>{letterData.student.course}</Text> in the Department of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam.
+                      {'\n\n'}
+                      The student's conduct and character are good.
+                    </Text>
+                  )}
+                  {documentType === 'Loan Estimation Letter' && (
+                    <Text style={styles.contentText}>
+                      This is to certify that <Text style={styles.bold}>{letterData.student.name}</Text>, bearing regd. No. <Text style={styles.bold}>{letterData.student.rollNo}</Text> is a student of <Text style={styles.bold}>{letterData.student.course}</Text> in our institution.
+                      {'\n\n'}
+                      The estimated annual tuition fee is <Text style={styles.bold}>₹1,50,000</Text> (Rupees One Lakh Fifty Thousand Only).
+                      {'\n\n'}
+                      This letter is issued for educational loan purposes.
+                    </Text>
+                  )}
+                  {documentType === 'Internship Permission Letter' && (
+                    <Text style={styles.contentText}>
+                      This is to certify that <Text style={styles.bold}>{letterData.student.name}</Text>, bearing regd. No. <Text style={styles.bold}>{letterData.student.rollNo}</Text> is a student of <Text style={styles.bold}>{letterData.student.course}</Text> in the Department of Computer Science & Systems Engineering.
+                      {'\n\n'}
+                      We have no objection to the student undertaking an internship program during the vacation period. This internship is part of the curriculum requirements.
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -525,17 +546,20 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
     letterSpacing: 0.5
   },
-  studentInfoBox: {
-    padding: SPACING.md,
-    backgroundColor: COLORS.lightGray,
+  contentBox: {
+    padding: SPACING.lg,
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary
+    borderLeftColor: COLORS.primary,
+    borderWidth: 1,
+    borderColor: COLORS.border
   },
-  studentInfoText: {
+  contentText: {
     fontSize: FONTS.sizes.sm,
     color: COLORS.text,
-    lineHeight: 24
+    lineHeight: 24,
+    textAlign: 'justify'
   },
   bold: {
     fontWeight: 'bold'
