@@ -80,105 +80,107 @@ export default function StudentsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Students</Text>
-        <Text style={styles.headerSubtitle}>View student details and attendance records</Text>
-      </View>
-
-      <View style={styles.controlsCard}>
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color={COLORS.darkGray} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by name or roll number..."
-            placeholderTextColor={COLORS.darkGray}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery ? (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={20} color={COLORS.darkGray} />
-            </TouchableOpacity>
-          ) : null}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <View style={styles.headerSection}>
+          <Text style={styles.headerTitle}>Students</Text>
+          <Text style={styles.headerSubtitle}>View student details and attendance records</Text>
         </View>
 
-        <CustomDropdown
-          label="Filter by Class"
-          value={selectedClass}
-          options={classes}
-          onSelect={setSelectedClass}
-          placeholder="Select Class"
-        />
-      </View>
-
-      <ScrollView
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.headerCell, styles.rollNoCell]}>Roll No</Text>
-            <Text style={[styles.headerCell, styles.nameCell]}>Name</Text>
-            <Text style={[styles.headerCell, styles.attendanceCell]}>Attend %</Text>
-            <Text style={[styles.headerCell, styles.statusCell]}>Status</Text>
+        <View style={styles.controlsCard}>
+          <View style={styles.searchBox}>
+            <Ionicons name="search" size={22} color={COLORS.darkGray} style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search by name or roll number..."
+              placeholderTextColor={COLORS.darkGray}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery ? (
+              <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
+                <Ionicons name="close-circle" size={22} color={COLORS.darkGray} />
+              </TouchableOpacity>
+            ) : null}
           </View>
 
-          {filteredStudents.map((student, index) => (
-            <View
-              key={student.rollNo}
-              style={[
-                styles.tableRow,
-                index % 2 === 0 && styles.tableRowEven
-              ]}
-            >
-              <Text style={[styles.cell, styles.rollNoCell]} numberOfLines={1}>
-                {student.rollNo}
-              </Text>
-              <View style={[styles.nameColumn, styles.nameCell]}>
-                <Text style={styles.studentName} numberOfLines={1}>
-                  {student.name}
-                </Text>
-                <Text style={styles.studentClass} numberOfLines={1}>
-                  {student.className}
-                </Text>
-              </View>
-              <Text
+          <View style={styles.dropdownSection}>
+            <CustomDropdown
+              label="Filter by Class"
+              value={selectedClass}
+              options={classes}
+              onSelect={setSelectedClass}
+              placeholder="Select Class"
+            />
+          </View>
+        </View>
+
+        <View style={styles.tableWrapper}>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.headerCell, styles.rollNoCell]}>Roll No</Text>
+              <Text style={[styles.headerCell, styles.nameCell]}>Name</Text>
+              <Text style={[styles.headerCell, styles.attendanceCell]}>Attend %</Text>
+              <Text style={[styles.headerCell, styles.statusCell]}>Status</Text>
+            </View>
+
+            {filteredStudents.map((student, index) => (
+              <View
+                key={student.rollNo}
                 style={[
-                  styles.cell,
-                  styles.attendanceCell,
-                  styles.attendanceValue,
-                  student.attendancePercent < 75 && styles.attendanceValueLow
+                  styles.tableRow,
+                  index % 2 === 0 && styles.tableRowEven
                 ]}
               >
-                {student.attendancePercent.toFixed(0)}%
-              </Text>
-              <View style={[styles.statusColumn, styles.statusCell]}>
-                <View
+                <Text style={[styles.cell, styles.rollNoCell]} numberOfLines={1}>
+                  {student.rollNo}
+                </Text>
+                <View style={[styles.nameColumn, styles.nameCell]}>
+                  <Text style={styles.studentName} numberOfLines={1}>
+                    {student.name}
+                  </Text>
+                  <Text style={styles.studentClass} numberOfLines={1}>
+                    {student.className}
+                  </Text>
+                </View>
+                <Text
                   style={[
-                    styles.statusPill,
-                    student.status === 'Eligible' ? styles.statusPillGreen : styles.statusPillRed
+                    styles.cell,
+                    styles.attendanceCell,
+                    styles.attendanceValue,
+                    student.attendancePercent < 75 && styles.attendanceValueLow
                   ]}
                 >
-                  <Text style={styles.statusText}>{student.status}</Text>
+                  {student.attendancePercent.toFixed(0)}%
+                </Text>
+                <View style={[styles.statusColumn, styles.statusCell]}>
+                  <View
+                    style={[
+                      styles.statusPill,
+                      student.status === 'Eligible' ? styles.statusPillGreen : styles.statusPillRed
+                    ]}
+                  >
+                    <Text style={styles.statusText}>{student.status}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
-        </View>
-
-        {filteredStudents.length === 0 && (
-          <View style={styles.emptyState}>
-            <Ionicons name="search-outline" size={64} color={COLORS.gray} />
-            <Text style={styles.emptyText}>No students found</Text>
-            <Text style={styles.emptySubtext}>
-              {searchQuery
-                ? 'Try a different search term'
-                : 'No students in this class'}
-            </Text>
+            ))}
           </View>
-        )}
+
+          {filteredStudents.length === 0 && (
+            <View style={styles.emptyState}>
+              <Ionicons name="search-outline" size={64} color={COLORS.gray} />
+              <Text style={styles.emptyText}>No students found</Text>
+              <Text style={styles.emptySubtext}>
+                {searchQuery
+                  ? 'Try a different search term'
+                  : 'No students in this class'}
+              </Text>
+            </View>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -195,9 +197,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.background
   },
-  header: {
-    padding: SPACING.lg,
-    paddingTop: SPACING.md
+  headerSection: {
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.lg,
+    marginBottom: SPACING.sm
   },
   headerTitle: {
     fontSize: 28,
@@ -207,31 +211,33 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: FONTS.sizes.md,
-    color: COLORS.darkGray
+    color: COLORS.darkGray,
+    lineHeight: 22
   },
   controlsCard: {
     backgroundColor: COLORS.white,
-    margin: SPACING.md,
+    marginHorizontal: SPACING.md,
+    marginBottom: SPACING.lg,
     padding: SPACING.lg,
-    borderRadius: 12,
-    gap: SPACING.md,
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2
+    shadowRadius: 8,
+    elevation: 3
   },
-  searchContainer: {
+  searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.sm,
-    backgroundColor: COLORS.white,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 8,
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.md,
-    minHeight: 50
+    marginBottom: SPACING.lg,
+    minHeight: 56
+  },
+  searchIcon: {
+    marginRight: SPACING.sm
   },
   searchInput: {
     flex: 1,
@@ -239,22 +245,26 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     padding: 0
   },
-  list: {
-    flex: 1
+  clearButton: {
+    padding: SPACING.xs,
+    marginLeft: SPACING.xs
   },
-  listContent: {
-    padding: SPACING.md,
-    paddingTop: 0
+  dropdownSection: {
+    marginTop: 0
+  },
+  tableWrapper: {
+    paddingHorizontal: SPACING.md,
+    paddingBottom: SPACING.xl
   },
   tableContainer: {
     backgroundColor: COLORS.white,
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2
+    shadowRadius: 8,
+    elevation: 3
   },
   tableHeader: {
     flexDirection: 'row',
