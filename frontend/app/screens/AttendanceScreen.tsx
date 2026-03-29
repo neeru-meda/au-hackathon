@@ -13,21 +13,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SPACING, FONTS } from '../utils/theme';
 import { studentAPI, attendanceAPI } from '../utils/api';
 import { format } from 'date-fns';
-import { Picker } from '@react-native-picker/picker';
+import CustomDropdown from '../components/CustomDropdown';
 
 export default function AttendanceScreen() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [students, setStudents] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = useState('Class A');
-  const [subject, setSubject] = useState('Math');
-  const [period, setPeriod] = useState('1');
+  const [subject, setSubject] = useState('');
+  const [period, setPeriod] = useState('');
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [attendance, setAttendance] = useState<{ [key: string]: string }>({});
 
   const classes = ['Class A', 'Class B', 'Class C', 'Class D'];
   const subjects = ['Math', 'DBMS', 'OS', 'CN', 'SE'];
-  const periods = ['1', '2', '3', '4', '5', '6'];
+  const periods = ['Period 1', 'Period 2', 'Period 3', 'Period 4', 'Period 5', 'Period 6'];
 
   useEffect(() => {
     fetchStudents();
@@ -38,7 +38,7 @@ export default function AttendanceScreen() {
       const data = await studentAPI.getAll();
       const classStudents = data.students.filter((s: any) => s.className === selectedClass);
       setStudents(classStudents);
-      // Initialize all as Absent (as per requirement)
+      // Initialize all as Absent
       const initialAttendance: any = {};
       classStudents.forEach((s: any) => {
         initialAttendance[s.rollNo] = 'Absent';
@@ -59,6 +59,11 @@ export default function AttendanceScreen() {
   };
 
   const handleSubmit = async () => {
+    if (!subject || !period) {
+      Alert.alert('Error', 'Please select subject and period');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const attendanceList = students.map(s => ({
@@ -71,7 +76,7 @@ export default function AttendanceScreen() {
         date,
         className: selectedClass,
         subject,
-        period,
+        period: period.split(' ')[1], // Extract number from "Period 1"
         markedBy: 'teacher',
         attendance: attendanceList
       });
@@ -91,6 +96,9 @@ export default function AttendanceScreen() {
     }
   };
 
+  const presentCount = Object.values(attendance).filter(s => s === 'Present').length;
+  const absentCount = students.length - presentCount;
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -101,105 +109,108 @@ export default function AttendanceScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mark Attendance</Text>
-        <Text style={styles.headerSubtitle}>Date: {format(new Date(date), 'dd MMM yyyy')}</Text>
-      </View>
-
-      <View style={styles.controls}>
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Class</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={selectedClass}
-              onValueChange={setSelectedClass}
-              style={styles.picker}
-            >
-              {classes.map(cls => (
-                <Picker.Item key={cls} label={cls} value={cls} />
-              ))}
-            </Picker>
-          </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Take Attendance</Text>
+          <Text style={styles.headerSubtitle}>Mark student attendance for today's class</Text>
         </View>
 
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Subject</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={subject}
-              onValueChange={setSubject}
-              style={styles.picker}
-            >
-              {subjects.map(sub => (
-                <Picker.Item key={sub} label={sub} value={sub} />
-              ))}
-            </Picker>
+        <View style={styles.card}>
+          <View style={styles.controlsRow}>
+            <CustomDropdown
+              label="Class"
+              value={selectedClass}
+              options={classes}
+              onSelect={setSelectedClass}
+              placeholder="Select Class"
+            />
+            <CustomDropdown
+              label="Subject"
+              value={subject}
+              options={subjects}
+              onSelect={setSubject}
+              placeholder="Select Subject"
+            />
           </View>
-        </View>
 
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Period</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={period}
-              onValueChange={setPeriod}
-              style={styles.picker}
-            >
-              {periods.map(p => (
-                <Picker.Item key={p} label={`Period ${p}`} value={p} />
-              ))}
-            </Picker>
-          </View>
-        </View>
-      </View>
-
-      <ScrollView style={styles.studentList}>
-        {students.map(student => {
-          const isPresent = attendance[student.rollNo] === 'Present';
-          return (
-            <TouchableOpacity
-              key={student.rollNo}
-              style={[
-                styles.studentCard,
-                isPresent && styles.studentCardPresent
-              ]}
-              onPress={() => toggleAttendance(student.rollNo)}
-            >
-              <View style={styles.studentInfo}>
-                <Text style={styles.studentName}>{student.name}</Text>
-                <Text style={styles.studentRoll}>{student.rollNo}</Text>
+          <View style={styles.controlsRow}>
+            <View style={styles.dateContainer}>
+              <Text style={styles.label}>Date</Text>
+              <View style={styles.dateBox}>
+                <Ionicons name="calendar-outline" size={20} color={COLORS.darkGray} />
+                <Text style={styles.dateText}>{format(new Date(date), 'dd-MM-yyyy')}</Text>
               </View>
-              <View style={styles.statusContainer}>
-                <Text
-                  style={[
-                    styles.statusText,
-                    isPresent && styles.statusTextPresent
-                  ]}
-                >
-                  {attendance[student.rollNo]}
-                </Text>
-                <Ionicons
-                  name={isPresent ? 'checkmark-circle' : 'close-circle'}
-                  size={32}
-                  color={isPresent ? COLORS.accent : COLORS.danger}
-                />
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+            </View>
+            <CustomDropdown
+              label="Period"
+              value={period}
+              options={periods}
+              onSelect={setPeriod}
+              placeholder="Select Period"
+            />
+          </View>
+
+          <View style={styles.summaryRow}>
+            <View style={[styles.summaryBox, { backgroundColor: COLORS.accent }]}>
+              <Text style={styles.summaryText}>Present: {presentCount}</Text>
+            </View>
+            <View style={[styles.summaryBox, { backgroundColor: COLORS.danger }]}>
+              <Text style={styles.summaryText}>Absent: {absentCount}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.studentSection}>
+          <Text style={styles.sectionTitle}>Students ({students.length})</Text>
+          {students.map(student => {
+            const isPresent = attendance[student.rollNo] === 'Present';
+            return (
+              <TouchableOpacity
+                key={student.rollNo}
+                style={[
+                  styles.studentCard,
+                  isPresent && styles.studentCardPresent
+                ]}
+                onPress={() => toggleAttendance(student.rollNo)}
+              >
+                <View style={styles.studentInfo}>
+                  <Text style={styles.studentName}>{student.name}</Text>
+                  <Text style={styles.studentRoll}>{student.rollNo}</Text>
+                </View>
+                <View style={styles.statusContainer}>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      isPresent ? styles.statusBadgePresent : styles.statusBadgeAbsent
+                    ]}
+                  >
+                    <Text style={styles.statusBadgeText}>
+                      {attendance[student.rollNo]}
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name={isPresent ? 'checkmark-circle' : 'close-circle'}
+                    size={28}
+                    color={isPresent ? COLORS.accent : COLORS.danger}
+                  />
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleSubmit}
+          disabled={submitting}
+        >
+          {submitting ? (
+            <ActivityIndicator color={COLORS.white} />
+          ) : (
+            <Text style={styles.submitButtonText}>Submit Attendance</Text>
+          )}
+        </TouchableOpacity>
       </ScrollView>
-
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={handleSubmit}
-        disabled={submitting}
-      >
-        {submitting ? (
-          <ActivityIndicator color={COLORS.white} />
-        ) : (
-          <Text style={styles.submitButtonText}>Submit Attendance</Text>
-        )}
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -216,51 +227,83 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background
   },
   header: {
-    padding: SPACING.md,
-    paddingTop: SPACING.sm,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border
+    padding: SPACING.lg,
+    paddingTop: SPACING.md
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.text,
     marginBottom: SPACING.xs
   },
   headerSubtitle: {
-    fontSize: FONTS.sizes.sm,
+    fontSize: FONTS.sizes.md,
     color: COLORS.darkGray
   },
-  controls: {
-    padding: SPACING.md,
+  card: {
     backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-    gap: SPACING.sm
+    margin: SPACING.md,
+    padding: SPACING.lg,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3
   },
-  pickerContainer: {
-    marginBottom: SPACING.xs
+  controlsRow: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+    marginBottom: SPACING.md
+  },
+  dateContainer: {
+    flex: 1
   },
   label: {
-    fontSize: FONTS.sizes.md,
+    fontSize: FONTS.sizes.sm,
     fontWeight: '600',
     color: COLORS.text,
     marginBottom: SPACING.xs
   },
-  pickerWrapper: {
+  dateBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    backgroundColor: COLORS.white,
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 8,
-    backgroundColor: COLORS.white,
-    overflow: 'hidden'
+    padding: SPACING.md,
+    minHeight: 50
   },
-  picker: {
-    height: 50
+  dateText: {
+    fontSize: FONTS.sizes.md,
+    color: COLORS.text
   },
-  studentList: {
+  summaryRow: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+    marginTop: SPACING.md
+  },
+  summaryBox: {
     flex: 1,
+    padding: SPACING.md,
+    borderRadius: 8,
+    alignItems: 'center'
+  },
+  summaryText: {
+    fontSize: FONTS.sizes.md,
+    fontWeight: 'bold',
+    color: COLORS.white
+  },
+  studentSection: {
     padding: SPACING.md
+  },
+  sectionTitle: {
+    fontSize: FONTS.sizes.lg,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: SPACING.md
   },
   studentCard: {
     flexDirection: 'row',
@@ -271,12 +314,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: SPACING.sm,
     borderLeftWidth: 4,
-    borderLeftColor: COLORS.danger,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2
+    borderLeftColor: COLORS.danger
   },
   studentCardPresent: {
     backgroundColor: COLORS.white,
@@ -289,7 +327,7 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.md,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: SPACING.xs
+    marginBottom: 4
   },
   studentRoll: {
     fontSize: FONTS.sizes.sm,
@@ -300,18 +338,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: SPACING.sm
   },
-  statusText: {
-    fontSize: FONTS.sizes.md,
-    fontWeight: '600',
-    color: COLORS.danger
+  statusBadge: {
+    paddingHorizontal: SPACING.md,
+    paddingVertical: 6,
+    borderRadius: 16,
+    minWidth: 80,
+    alignItems: 'center'
   },
-  statusTextPresent: {
-    color: COLORS.accent
+  statusBadgePresent: {
+    backgroundColor: COLORS.accent
+  },
+  statusBadgeAbsent: {
+    backgroundColor: COLORS.danger
+  },
+  statusBadgeText: {
+    fontSize: FONTS.sizes.sm,
+    fontWeight: 'bold',
+    color: COLORS.white
   },
   submitButton: {
     backgroundColor: COLORS.primary,
     padding: SPACING.md,
     margin: SPACING.md,
+    marginTop: 0,
     borderRadius: 12,
     alignItems: 'center',
     minHeight: 56,
