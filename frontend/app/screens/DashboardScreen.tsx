@@ -77,7 +77,7 @@ export default function DashboardScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size=\"large\" color={COLORS.primary} />
+        <ActivityIndicator size='large' color={COLORS.primary} />
       </View>
     );
   }
@@ -94,32 +94,32 @@ export default function DashboardScreen() {
           <Text style={styles.headerSubtitle}>Welcome, {user?.name || 'User'}</Text>
         </View>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name=\"log-out-outline\" size={24} color={COLORS.primary} />
+          <Ionicons name='log-out-outline' size={24} color={COLORS.primary} />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.statsGrid}>
         <View style={[styles.statCard, { backgroundColor: COLORS.primary }]}>
-          <Ionicons name=\"people\" size={32} color={COLORS.white} />
+          <Ionicons name='people' size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.total}</Text>
           <Text style={styles.statLabel}>Total Students</Text>
         </View>
 
         <View style={[styles.statCard, { backgroundColor: COLORS.accent }]}>
-          <Ionicons name=\"checkmark-circle\" size={32} color={COLORS.white} />
+          <Ionicons name='checkmark-circle' size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.eligible}</Text>
           <Text style={styles.statLabel}>Eligible</Text>
         </View>
 
         <View style={[styles.statCard, { backgroundColor: COLORS.danger }]}>
-          <Ionicons name=\"alert-circle\" size={32} color={COLORS.white} />
+          <Ionicons name='alert-circle' size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.shortage}</Text>
           <Text style={styles.statLabel}>Shortage</Text>
         </View>
 
         <View style={[styles.statCard, { backgroundColor: COLORS.secondary }]}>
-          <Ionicons name=\"bar-chart\" size={32} color={COLORS.white} />
+          <Ionicons name='bar-chart' size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.avgAttendance}%</Text>
           <Text style={styles.statLabel}>Avg Attendance</Text>
         </View>
