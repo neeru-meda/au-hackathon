@@ -117,54 +117,56 @@ export default function StudentsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.tableHeader}>
-          <Text style={[styles.headerCell, styles.rollNoCell]}>Roll No</Text>
-          <Text style={[styles.headerCell, styles.nameCell]}>Name</Text>
-          <Text style={[styles.headerCell, styles.attendanceCell]}>Attend %</Text>
-          <Text style={[styles.headerCell, styles.statusCell]}>Status</Text>
-        </View>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.headerCell, styles.rollNoCell]}>Roll No</Text>
+            <Text style={[styles.headerCell, styles.nameCell]}>Name</Text>
+            <Text style={[styles.headerCell, styles.attendanceCell]}>Attend %</Text>
+            <Text style={[styles.headerCell, styles.statusCell]}>Status</Text>
+          </View>
 
-        {filteredStudents.map((student, index) => (
-          <View
-            key={student.rollNo}
-            style={[
-              styles.tableRow,
-              index % 2 === 0 && styles.tableRowEven
-            ]}
-          >
-            <Text style={[styles.cell, styles.rollNoCell]} numberOfLines={1}>
-              {student.rollNo}
-            </Text>
-            <View style={[styles.cell, styles.nameCell]}>
-              <Text style={styles.studentName} numberOfLines={1}>
-                {student.name}
-              </Text>
-              <Text style={styles.studentClass} numberOfLines={1}>
-                {student.className}
-              </Text>
-            </View>
-            <Text
+          {filteredStudents.map((student, index) => (
+            <View
+              key={student.rollNo}
               style={[
-                styles.cell,
-                styles.attendanceCell,
-                styles.attendanceValue,
-                student.attendancePercent < 75 && styles.attendanceValueLow
+                styles.tableRow,
+                index % 2 === 0 && styles.tableRowEven
               ]}
             >
-              {student.attendancePercent.toFixed(0)}%
-            </Text>
-            <View style={[styles.cell, styles.statusCell]}>
-              <View
+              <Text style={[styles.cell, styles.rollNoCell]} numberOfLines={1}>
+                {student.rollNo}
+              </Text>
+              <View style={[styles.cell, styles.nameCell]}>
+                <Text style={styles.studentName} numberOfLines={1}>
+                  {student.name}
+                </Text>
+                <Text style={styles.studentClass} numberOfLines={1}>
+                  {student.className}
+                </Text>
+              </View>
+              <Text
                 style={[
-                  styles.statusPill,
-                  student.status === 'Eligible' ? styles.statusPillGreen : styles.statusPillRed
+                  styles.cell,
+                  styles.attendanceCell,
+                  styles.attendanceValue,
+                  student.attendancePercent < 75 && styles.attendanceValueLow
                 ]}
               >
-                <Text style={styles.statusText}>{student.status}</Text>
+                {student.attendancePercent.toFixed(0)}%
+              </Text>
+              <View style={[styles.cell, styles.statusCell]}>
+                <View
+                  style={[
+                    styles.statusPill,
+                    student.status === 'Eligible' ? styles.statusPillGreen : styles.statusPillRed
+                  ]}
+                >
+                  <Text style={styles.statusText}>{student.status}</Text>
+                </View>
               </View>
             </View>
-          </View>
-        ))}
+          ))}
+        </View>
 
         {filteredStudents.length === 0 && (
           <View style={styles.emptyState}>
@@ -240,14 +242,24 @@ const styles = StyleSheet.create({
     flex: 1
   },
   listContent: {
-    padding: SPACING.md
+    padding: SPACING.md,
+    paddingTop: 0
+  },
+  tableContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    padding: SPACING.sm,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    backgroundColor: '#F5F5F5',
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.sm,
     borderBottomWidth: 2,
     borderBottomColor: COLORS.border
   },
@@ -258,11 +270,12 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    padding: SPACING.sm,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.sm,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray,
-    alignItems: 'center'
+    alignItems: 'center',
+    minHeight: 60
   },
   tableRowEven: {
     backgroundColor: '#FAFAFA'
@@ -273,11 +286,11 @@ const styles = StyleSheet.create({
   },
   rollNoCell: {
     width: '18%',
-    paddingRight: 4
+    paddingRight: 6
   },
   nameCell: {
     width: '35%',
-    paddingRight: 4
+    paddingRight: 6
   },
   attendanceCell: {
     width: '17%',
@@ -291,7 +304,7 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.sm,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 2
+    marginBottom: 4
   },
   studentClass: {
     fontSize: 10,
@@ -299,16 +312,17 @@ const styles = StyleSheet.create({
   },
   attendanceValue: {
     fontWeight: 'bold',
-    color: COLORS.accent
+    color: COLORS.accent,
+    fontSize: FONTS.sizes.md
   },
   attendanceValueLow: {
     color: COLORS.danger
   },
   statusPill: {
     paddingHorizontal: SPACING.sm,
-    paddingVertical: 4,
+    paddingVertical: 6,
     borderRadius: 12,
-    minWidth: 70,
+    minWidth: 75,
     alignItems: 'center'
   },
   statusPillGreen: {
@@ -318,7 +332,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.danger
   },
   statusText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 'bold',
     color: COLORS.white
   },

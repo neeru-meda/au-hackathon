@@ -14,6 +14,7 @@ import { COLORS, SPACING, FONTS } from '../utils/theme';
 import { studentAPI, attendanceAPI } from '../utils/api';
 import { format } from 'date-fns';
 import CustomDropdown from '../components/CustomDropdown';
+import DatePicker from '../components/DatePicker';
 
 export default function AttendanceScreen() {
   const [loading, setLoading] = useState(true);
@@ -22,16 +23,12 @@ export default function AttendanceScreen() {
   const [selectedClass, setSelectedClass] = useState('Class A');
   const [subject, setSubject] = useState('');
   const [period, setPeriod] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [attendance, setAttendance] = useState<{ [key: string]: string }>({});
 
   const classes = ['Class A', 'Class B', 'Class C', 'Class D'];
   const subjects = ['Math', 'DBMS', 'OS', 'CN', 'SE'];
   const periods = ['Period 1', 'Period 2', 'Period 3', 'Period 4', 'Period 5', 'Period 6'];
-
-  // Get current date dynamically
-  const currentDate = new Date();
-  const formattedDate = format(currentDate, 'dd-MM-yyyy');
-  const dateForAPI = format(currentDate, 'yyyy-MM-dd');
 
   useEffect(() => {
     fetchStudents();
@@ -77,7 +74,7 @@ export default function AttendanceScreen() {
       }));
 
       await attendanceAPI.submit({
-        date: dateForAPI,
+        date: format(selectedDate, 'yyyy-MM-dd'),
         className: selectedClass,
         subject,
         period: period.split(' ')[1],
@@ -138,13 +135,11 @@ export default function AttendanceScreen() {
           </View>
 
           <View style={styles.controlsRow}>
-            <View style={styles.dateContainer}>
-              <Text style={styles.label}>Date</Text>
-              <View style={styles.dateBox}>
-                <Ionicons name="calendar-outline" size={18} color={COLORS.darkGray} />
-                <Text style={styles.dateText} numberOfLines={1}>{formattedDate}</Text>
-              </View>
-            </View>
+            <DatePicker
+              label="Date"
+              value={selectedDate}
+              onSelect={setSelectedDate}
+            />
             <CustomDropdown
               label="Period"
               value={period}
@@ -259,31 +254,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: SPACING.md,
     marginBottom: SPACING.md
-  },
-  dateContainer: {
-    flex: 1
-  },
-  label: {
-    fontSize: FONTS.sizes.sm,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SPACING.xs
-  },
-  dateBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
-    backgroundColor: COLORS.white,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 8,
-    padding: SPACING.md,
-    minHeight: 50
-  },
-  dateText: {
-    fontSize: FONTS.sizes.sm,
-    color: COLORS.text,
-    flex: 1
   },
   summaryRow: {
     flexDirection: 'row',
