@@ -9,7 +9,8 @@ import {
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Print from 'expo-print';
@@ -24,6 +25,9 @@ const documentTypes = [
   'Loan Estimation Letter',
   'Internship Permission Letter'
 ];
+
+// AU Logo URL from assets
+const AU_LOGO_URL = 'https://customer-assets.emergentagent.com/job_au-mobile-suite/artifacts/wrksjzfy_image.png';
 
 export default function LettersScreen() {
   const [rollNo, setRollNo] = useState('');
@@ -58,16 +62,16 @@ export default function LettersScreen() {
     let content = '';
     switch (documentType) {
       case 'Bonafide Certificate':
-        content = `This is to certify that ${student.name}, bearing regd. No. ${student.rollNo} is a bonafide student of B.Tech CSE in the Dept. of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam during the academic year 2025-26.<br><br>This certificate is issued at the request of the student.`;
+        content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> is a bonafide student of <strong>${student.course}</strong>, II-Semester in the Dept. of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam during the academic year <strong>2025-26</strong>.<br><br>This certificate is issued at the request of the student for official purposes.`;
         break;
       case 'Study Certificate':
-        content = `This is to certify that ${student.name}, Roll No. ${student.rollNo}, has been studying ${student.course} in the Department of Computer Science & Systems Engineering, Andhra University College of Engineering (A), Visakhapatnam.<br><br>The student's conduct and character are good.`;
+        content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> has been studying <strong>${student.course}</strong> in the Department of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam.<br><br>The student's conduct and character are good.`;
         break;
       case 'Loan Estimation Letter':
-        content = `This is to certify that ${student.name}, Roll No. ${student.rollNo}, is a student of ${student.course} in our institution.<br><br>The estimated annual tuition fee is ₹1,50,000 (Rupees One Lakh Fifty Thousand Only).<br><br>This letter is issued for educational loan purposes.`;
+        content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> is a student of <strong>${student.course}</strong> in our institution.<br><br>The estimated annual tuition fee is <strong>₹1,50,000</strong> (Rupees One Lakh Fifty Thousand Only).<br><br>This letter is issued for educational loan purposes.`;
         break;
       case 'Internship Permission Letter':
-        content = `This is to certify that ${student.name}, Roll No. ${student.rollNo}, is a student of ${student.course} in the Department of Computer Science & Systems Engineering.<br><br>We have no objection to the student undertaking an internship program during the vacation period. This internship is part of the curriculum requirements.`;
+        content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> is a student of <strong>${student.course}</strong> in the Department of Computer Science & Systems Engineering.<br><br>We have no objection to the student undertaking an internship program during the vacation period. This internship is part of the curriculum requirements.`;
         break;
     }
 
@@ -76,75 +80,94 @@ export default function LettersScreen() {
         <head>
           <style>
             body { 
-              font-family: 'Times New Roman', serif; 
-              padding: 40px; 
+              font-family: Arial, sans-serif; 
+              padding: 30px 20px;
               line-height: 1.6;
+              color: #000;
+            }
+            .logo-container {
+              text-align: center;
+              margin-bottom: 20px;
+            }
+            .logo {
+              width: 80px;
+              height: auto;
             }
             .header { 
               text-align: center; 
-              margin-bottom: 40px;
-              border-bottom: 2px solid #B31217;
-              padding-bottom: 20px;
+              margin-bottom: 30px;
             }
             .dept { 
               font-weight: bold; 
-              font-size: 18px; 
-              color: #B31217; 
-              margin-bottom: 5px;
+              font-size: 16px; 
+              color: #000;
+              margin-bottom: 8px;
+              letter-spacing: 0.5px;
             }
             .college { 
-              font-size: 16px;
-              font-weight: 600;
-              margin-top: 5px; 
+              font-size: 13px;
+              color: #333;
+              margin: 4px 0;
             }
-            .location {
-              font-size: 14px;
+            .contact {
+              font-size: 11px;
               color: #666;
-              margin-top: 3px;
+              margin-top: 8px;
             }
-            .date { 
+            .date-section { 
               text-align: right; 
-              margin: 30px 0 20px 0;
-              font-size: 14px;
+              margin: 25px 0 20px 0;
+              font-size: 13px;
             }
             .title { 
               text-align: center; 
               font-weight: bold; 
-              text-decoration: underline; 
-              margin: 40px 0 30px 0; 
-              font-size: 20px;
-              color: #000;
+              margin: 30px 0; 
+              font-size: 18px;
+              color: #B31217;
+              letter-spacing: 1px;
             }
             .content { 
               text-align: justify; 
-              line-height: 2; 
-              font-size: 16px;
-              margin: 30px 0;
+              line-height: 1.8; 
+              font-size: 14px;
+              margin: 25px 0;
             }
-            .signature { 
-              margin-top: 60px; 
+            .signature-section { 
+              margin-top: 80px;
               text-align: right;
-              line-height: 1.8;
+            }
+            .signature-line {
+              border-top: 1px solid #000;
+              width: 200px;
+              margin-left: auto;
+              margin-bottom: 5px;
             }
             .sign-name { 
               font-weight: bold; 
-              font-size: 15px;
+              font-size: 14px;
+              margin-bottom: 3px;
             }
             .sign-title {
-              font-size: 14px;
-              margin-top: 2px;
+              font-size: 12px;
+              color: #333;
+              margin: 2px 0;
             }
           </style>
         </head>
         <body>
-          <div class="header">
-            <div class="dept">DEPARTMENT OF COMPUTER SCIENCE AND SYSTEMS ENGINEERING</div>
-            <div class="college">A.U. COLLEGE OF ENGINEERING(A)</div>
-            <div class="college">ANDHRA UNIVERSITY</div>
-            <div class="location">VISAKHAPATNAM - 530003</div>
+          <div class="logo-container">
+            <img src="${AU_LOGO_URL}" class="logo" alt="AU Logo" />
           </div>
           
-          <div class="date">Date: ${date}</div>
+          <div class="header">
+            <div class="dept">DEPARTMENT OF COMPUTER SCIENCE AND SYSTEMS ENGINEERING</div>
+            <div class="college">A.U. College of Engineering (A), Andhra University</div>
+            <div class="college">Visakhapatnam - 530003</div>
+            <div class="contact">Telegram: UNIVERSITY | Office: 0891-2844854</div>
+          </div>
+          
+          <div class="date-section">Date: ${date}</div>
           
           <div class="title">${documentType.toUpperCase()}</div>
           
@@ -152,11 +175,12 @@ export default function LettersScreen() {
             ${content}
           </div>
           
-          <div class="signature">
-            <p class="sign-name">(${letterData.issuer.name})</p>
-            <p class="sign-title">${letterData.issuer.title}</p>
-            <p class="sign-title">${letterData.issuer.department}</p>
-            <p class="sign-title">ANDHRA UNIVERSITY</p>
+          <div class="signature-section">
+            <div class="signature-line"></div>
+            <p class="sign-name">Prof. V. Valli Kumari</p>
+            <p class="sign-title">Head of the Department</p>
+            <p class="sign-title">Computer Science & Systems Engineering</p>
+            <p class="sign-title">Andhra University, Visakhapatnam-530 003</p>
           </div>
         </body>
       </html>
@@ -274,22 +298,36 @@ export default function LettersScreen() {
               </View>
 
               <View style={styles.previewContent}>
+                <View style={styles.logoContainer}>
+                  <Image 
+                    source={{ uri: AU_LOGO_URL }} 
+                    style={styles.logo}
+                    resizeMode="contain"
+                  />
+                </View>
+
                 <View style={styles.letterHeader}>
                   <Text style={styles.deptText}>DEPARTMENT OF COMPUTER SCIENCE AND SYSTEMS ENGINEERING</Text>
-                  <Text style={styles.collegeText}>A.U. COLLEGE OF ENGINEERING(A)</Text>
-                  <Text style={styles.collegeText}>ANDHRA UNIVERSITY</Text>
-                  <Text style={styles.locationText}>VISAKHAPATNAM - 530003</Text>
+                  <Text style={styles.collegeText}>A.U. College of Engineering (A), Andhra University</Text>
+                  <Text style={styles.collegeText}>Visakhapatnam - 530003</Text>
+                  <Text style={styles.contactText}>Telegram: UNIVERSITY | Office: 0891-2844854</Text>
                 </View>
 
                 <Text style={styles.dateText}>Date: {letterData.date}</Text>
 
                 <Text style={styles.docTitle}>{documentType.toUpperCase()}</Text>
 
-                <Text style={styles.studentInfo}>
-                  Student: {letterData.student.name}
-                  {'\n'}Roll No: {letterData.student.rollNo}
-                  {'\n'}Class: {letterData.student.className}
-                </Text>
+                <View style={styles.studentInfoBox}>
+                  <Text style={styles.studentInfoText}>
+                    <Text style={styles.bold}>Student:</Text> {letterData.student.name}
+                    {'\n'}
+                    <Text style={styles.bold}>Roll No:</Text> {letterData.student.rollNo}
+                    {'\n'}
+                    <Text style={styles.bold}>Class:</Text> {letterData.student.className}
+                    {'\n'}
+                    <Text style={styles.bold}>Course:</Text> {letterData.student.course}
+                  </Text>
+                </View>
               </View>
 
               <View style={styles.actions}>
@@ -433,39 +471,45 @@ const styles = StyleSheet.create({
   },
   previewContent: {
     backgroundColor: COLORS.white,
-    padding: SPACING.xl,
+    padding: SPACING.lg,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2
   },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: SPACING.md
+  },
+  logo: {
+    width: 60,
+    height: 60
+  },
   letterHeader: {
     alignItems: 'center',
-    marginBottom: SPACING.xl,
-    paddingBottom: SPACING.lg,
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.primary
+    marginBottom: SPACING.lg,
+    paddingBottom: SPACING.md
   },
   deptText: {
-    fontSize: FONTS.sizes.sm,
+    fontSize: 11,
     fontWeight: 'bold',
-    color: COLORS.primary,
-    textAlign: 'center',
-    marginBottom: 4
-  },
-  collegeText: {
-    fontSize: FONTS.sizes.sm,
-    fontWeight: '600',
     color: COLORS.text,
     textAlign: 'center',
-    marginTop: 2
+    marginBottom: 6,
+    letterSpacing: 0.3
   },
-  locationText: {
-    fontSize: FONTS.sizes.xs,
+  collegeText: {
+    fontSize: 10,
+    color: COLORS.text,
+    textAlign: 'center',
+    marginTop: 3
+  },
+  contactText: {
+    fontSize: 9,
     color: COLORS.darkGray,
     textAlign: 'center',
-    marginTop: 4
+    marginTop: 6
   },
   dateText: {
     fontSize: FONTS.sizes.sm,
@@ -476,18 +520,25 @@ const styles = StyleSheet.create({
   docTitle: {
     fontSize: FONTS.sizes.lg,
     fontWeight: 'bold',
-    color: COLORS.text,
+    color: COLORS.primary,
     textAlign: 'center',
     marginBottom: SPACING.lg,
-    textDecorationLine: 'underline'
+    letterSpacing: 0.5
   },
-  studentInfo: {
-    fontSize: FONTS.sizes.sm,
-    color: COLORS.text,
-    lineHeight: 24,
+  studentInfoBox: {
     padding: SPACING.md,
     backgroundColor: COLORS.lightGray,
-    borderRadius: 8
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primary
+  },
+  studentInfoText: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.text,
+    lineHeight: 24
+  },
+  bold: {
+    fontWeight: 'bold'
   },
   actions: {
     flexDirection: 'row',
