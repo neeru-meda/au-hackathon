@@ -9,12 +9,15 @@ import {
   Platform,
   ScrollView,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS, SPACING, FONTS } from '../utils/theme';
 import { authAPI, seedAPI } from '../utils/api';
 import { useUser } from '../utils/UserContext';
+
+const AU_LOGO_URL = 'https://customer-assets.emergentagent.com/job_au-mobile-suite/artifacts/wrksjzfy_image.png';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -62,10 +65,11 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.logoContainer}>
-          {/* AU Logo Placeholder - will be replaced with actual logo */}
-          <View style={styles.logoPlaceholder}>
-            <Text style={styles.logoText}>AU</Text>
-          </View>
+          <Image 
+            source={{ uri: AU_LOGO_URL }} 
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Text style={styles.title}>AcadEase 360°</Text>
           <Text style={styles.subtitle}>AU CSSE Smart Utility</Text>
         </View>
@@ -134,19 +138,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: SPACING.xl
   },
-  logoPlaceholder: {
+  logoImage: {
     width: 100,
     height: 100,
-    borderRadius: 50,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: SPACING.md
-  },
-  logoText: {
-    fontSize: FONTS.sizes.xxxl,
-    fontWeight: 'bold',
-    color: COLORS.white
   },
   title: {
     fontSize: FONTS.sizes.xxl,

@@ -71,7 +71,7 @@ export default function LettersScreen() {
         content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> is a student of <strong>${student.course}</strong> in our institution.<br><br>The estimated annual tuition fee is <strong>₹1,50,000</strong> (Rupees One Lakh Fifty Thousand Only).<br><br>This letter is issued for educational loan purposes.`;
         break;
       case 'Internship Permission Letter':
-        content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> is a student of <strong>${student.course}</strong> in the Department of Computer Science & Systems Engineering.<br><br>We have no objection to the student undertaking an internship program during the vacation period. This internship is part of the curriculum requirements.`;
+        content = `This is to certify that <strong>${student.name}</strong>, bearing regd. No. <strong>${student.rollNo}</strong> is a bonafide student of <strong>${student.course}</strong>, II-Semester in the Dept. of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam during the academic year <strong>2025-26</strong>.<br><br>This certificate is issued at the request of the student for the purpose of applying for Summer internship programme. We have no objection to their participation in the program.`;
         break;
     }
 
@@ -164,7 +164,6 @@ export default function LettersScreen() {
             <div class="dept">DEPARTMENT OF COMPUTER SCIENCE AND SYSTEMS ENGINEERING</div>
             <div class="college">A.U. College of Engineering (A), Andhra University</div>
             <div class="college">Visakhapatnam - 530003</div>
-            <div class="contact">Telegram: UNIVERSITY | Office: 0891-2844854</div>
           </div>
           
           <div class="date-section">Date: ${date}</div>
@@ -310,7 +309,6 @@ export default function LettersScreen() {
                   <Text style={styles.deptText}>DEPARTMENT OF COMPUTER SCIENCE AND SYSTEMS ENGINEERING</Text>
                   <Text style={styles.collegeText}>A.U. College of Engineering (A), Andhra University</Text>
                   <Text style={styles.collegeText}>Visakhapatnam - 530003</Text>
-                  <Text style={styles.contactText}>Telegram: UNIVERSITY | Office: 0891-2844854</Text>
                 </View>
 
                 <Text style={styles.dateText}>Date: {letterData.date}</Text>
@@ -343,9 +341,9 @@ export default function LettersScreen() {
                   )}
                   {documentType === 'Internship Permission Letter' && (
                     <Text style={styles.contentText}>
-                      This is to certify that <Text style={styles.bold}>{letterData.student.name}</Text>, bearing regd. No. <Text style={styles.bold}>{letterData.student.rollNo}</Text> is a student of <Text style={styles.bold}>{letterData.student.course}</Text> in the Department of Computer Science & Systems Engineering.
+                      This is to certify that <Text style={styles.bold}>{letterData.student.name}</Text>, bearing regd. No. <Text style={styles.bold}>{letterData.student.rollNo}</Text> is a bonafide student of <Text style={styles.bold}>{letterData.student.course}</Text>, II-Semester in the Dept. of Computer Science & Systems Engineering, A.U. College of Engineering (A), Andhra University, Visakhapatnam during the academic year <Text style={styles.bold}>2025-26</Text>.
                       {'\n\n'}
-                      We have no objection to the student undertaking an internship program during the vacation period. This internship is part of the curriculum requirements.
+                      This certificate is issued at the request of the student for the purpose of applying for Summer internship programme. We have no objection to their participation in the program.
                     </Text>
                   )}
                 </View>
