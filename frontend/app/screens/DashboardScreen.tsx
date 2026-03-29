@@ -6,13 +6,18 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { COLORS, SPACING, FONTS } from '../utils/theme';
 import { studentAPI, analyticsAPI } from '../utils/api';
+import { useUser } from '../utils/UserContext';
 
 export default function DashboardScreen() {
+  const router = useRouter();
+  const { user, logout } = useUser();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({
@@ -51,10 +56,28 @@ export default function DashboardScreen() {
     setRefreshing(false);
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: () => {
+            logout();
+            router.replace('/');
+          }
+        }
+      ]
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+        <ActivityIndicator size=\"large\" color={COLORS.primary} />
       </View>
     );
   }
@@ -66,69 +89,39 @@ export default function DashboardScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Dashboard</Text>
-        <Text style={styles.headerSubtitle}>AU CSSE Smart Utility</Text>
+        <View>
+          <Text style={styles.headerTitle}>Dashboard</Text>
+          <Text style={styles.headerSubtitle}>Welcome, {user?.name || 'User'}</Text>
+        </View>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Ionicons name=\"log-out-outline\" size={24} color={COLORS.primary} />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.statsGrid}>
         <View style={[styles.statCard, { backgroundColor: COLORS.primary }]}>
-          <Ionicons name="people" size={32} color={COLORS.white} />
+          <Ionicons name=\"people\" size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.total}</Text>
           <Text style={styles.statLabel}>Total Students</Text>
         </View>
 
         <View style={[styles.statCard, { backgroundColor: COLORS.accent }]}>
-          <Ionicons name="checkmark-circle" size={32} color={COLORS.white} />
+          <Ionicons name=\"checkmark-circle\" size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.eligible}</Text>
           <Text style={styles.statLabel}>Eligible</Text>
         </View>
 
         <View style={[styles.statCard, { backgroundColor: COLORS.danger }]}>
-          <Ionicons name="alert-circle" size={32} color={COLORS.white} />
+          <Ionicons name=\"alert-circle\" size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.shortage}</Text>
           <Text style={styles.statLabel}>Shortage</Text>
         </View>
 
         <View style={[styles.statCard, { backgroundColor: COLORS.secondary }]}>
-          <Ionicons name="bar-chart" size={32} color={COLORS.white} />
+          <Ionicons name=\"bar-chart\" size={32} color={COLORS.white} />
           <Text style={styles.statValue}>{stats.avgAttendance}%</Text>
           <Text style={styles.statLabel}>Avg Attendance</Text>
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.actionCard}>
-            <Ionicons name="calendar" size={40} color={COLORS.primary} />
-            <Text style={styles.actionText}>Mark Attendance</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionCard}>
-            <Ionicons name="people-outline" size={40} color={COLORS.accent} />
-            <Text style={styles.actionText}>View Students</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionCard}>
-            <Ionicons name="notifications-outline" size={40} color={COLORS.danger} />
-            <Text style={styles.actionText}>Send Alerts</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionCard}>
-            <Ionicons name="document-text-outline" size={40} color={COLORS.secondary} />
-            <Text style={styles.actionText}>Generate Letter</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.infoCard}>
-        <Ionicons name="information-circle" size={24} color={COLORS.primary} />
-        <View style={styles.infoText}>
-          <Text style={styles.infoTitle}>Business Rule Active</Text>
-          <Text style={styles.infoDescription}>
-            Students with attendance below 75% are automatically marked as "Shortage" and added to
-            alert list.
-          </Text>
         </View>
       </View>
     </ScrollView>
@@ -150,7 +143,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background
   },
   header: {
-    marginBottom: SPACING.lg
+    marginBottom: SPACING.lg,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
   },
   headerTitle: {
     fontSize: FONTS.sizes.xxxl,
@@ -161,6 +157,21 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: FONTS.sizes.md,
     color: COLORS.darkGray
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs,
+    padding: SPACING.sm,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.border
+  },
+  logoutText: {
+    fontSize: FONTS.sizes.sm,
+    fontWeight: '600',
+    color: COLORS.primary
   },
   statsGrid: {
     flexDirection: 'row',
@@ -190,67 +201,5 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.sm,
     color: COLORS.white,
     marginTop: SPACING.xs
-  },
-  section: {
-    marginBottom: SPACING.lg
-  },
-  sectionTitle: {
-    fontSize: FONTS.sizes.xl,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: SPACING.md
-  },
-  quickActions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: SPACING.md
-  },
-  actionCard: {
-    flex: 1,
-    minWidth: '45%',
-    backgroundColor: COLORS.white,
-    padding: SPACING.lg,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2
-  },
-  actionText: {
-    fontSize: FONTS.sizes.md,
-    color: COLORS.text,
-    marginTop: SPACING.sm,
-    textAlign: 'center',
-    fontWeight: '600'
-  },
-  infoCard: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    padding: SPACING.md,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2
-  },
-  infoText: {
-    flex: 1,
-    marginLeft: SPACING.md
-  },
-  infoTitle: {
-    fontSize: FONTS.sizes.md,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: SPACING.xs
-  },
-  infoDescription: {
-    fontSize: FONTS.sizes.sm,
-    color: COLORS.darkGray,
-    lineHeight: 20
   }
 });

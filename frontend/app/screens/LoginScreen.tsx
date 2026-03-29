@@ -8,19 +8,19 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image,
   Alert,
   ActivityIndicator
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS, SPACING, FONTS } from '../utils/theme';
 import { authAPI, seedAPI } from '../utils/api';
+import { useUser } from '../utils/UserContext';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { setUser } = useUser();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'Teacher' | 'Admin'>('Teacher');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -34,11 +34,13 @@ export default function LoginScreen() {
       // First, seed data if needed
       await seedAPI.seedData();
       
-      // Then login
-      const response = await authAPI.login(username, password, role);
+      // Then login (no role needed - auto-detected)
+      const response = await authAPI.login(username, password);
       
       if (response.success) {
-        // Navigate to dashboard with user info
+        // Store user in context
+        setUser(response.user);
+        // Navigate to appropriate dashboard
         router.replace('/(tabs)/dashboard');
       } else {
         Alert.alert('Error', response.message);
@@ -60,10 +62,11 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.logoContainer}>
+          {/* AU Logo Placeholder - will be replaced with actual logo */}
           <View style={styles.logoPlaceholder}>
             <Text style={styles.logoText}>AU</Text>
           </View>
-          <Text style={styles.title}>Classroom 360°</Text>
+          <Text style={styles.title}>AcadEase 360°</Text>
           <Text style={styles.subtitle}>AU CSSE Smart Utility</Text>
         </View>
 
@@ -92,44 +95,6 @@ export default function LoginScreen() {
               placeholderTextColor={COLORS.darkGray}
               secureTextEntry
             />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Role</Text>
-            <View style={styles.roleContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.roleButton,
-                  role === 'Teacher' && styles.roleButtonActive
-                ]}
-                onPress={() => setRole('Teacher')}
-              >
-                <Text
-                  style={[
-                    styles.roleButtonText,
-                    role === 'Teacher' && styles.roleButtonTextActive
-                  ]}
-                >
-                  Teacher
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.roleButton,
-                  role === 'Admin' && styles.roleButtonActive
-                ]}
-                onPress={() => setRole('Admin')}
-              >
-                <Text
-                  style={[
-                    styles.roleButtonText,
-                    role === 'Admin' && styles.roleButtonTextActive
-                  ]}
-                >
-                  Admin
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
 
           <TouchableOpacity
@@ -227,31 +192,6 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.md,
     backgroundColor: COLORS.white,
     color: COLORS.text
-  },
-  roleContainer: {
-    flexDirection: 'row',
-    gap: SPACING.sm
-  },
-  roleButton: {
-    flex: 1,
-    padding: SPACING.md,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    backgroundColor: COLORS.white,
-    alignItems: 'center'
-  },
-  roleButtonActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary
-  },
-  roleButtonText: {
-    fontSize: FONTS.sizes.md,
-    fontWeight: '600',
-    color: COLORS.text
-  },
-  roleButtonTextActive: {
-    color: COLORS.white
   },
   loginButton: {
     backgroundColor: COLORS.primary,
