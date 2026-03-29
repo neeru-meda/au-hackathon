@@ -136,7 +136,7 @@ export default function StudentsScreen() {
               <Text style={[styles.cell, styles.rollNoCell]} numberOfLines={1}>
                 {student.rollNo}
               </Text>
-              <View style={[styles.cell, styles.nameCell]}>
+              <View style={[styles.nameColumn, styles.nameCell]}>
                 <Text style={styles.studentName} numberOfLines={1}>
                   {student.name}
                 </Text>
@@ -154,7 +154,7 @@ export default function StudentsScreen() {
               >
                 {student.attendancePercent.toFixed(0)}%
               </Text>
-              <View style={[styles.cell, styles.statusCell]}>
+              <View style={[styles.statusColumn, styles.statusCell]}>
                 <View
                   style={[
                     styles.statusPill,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   controlsCard: {
     backgroundColor: COLORS.white,
     margin: SPACING.md,
-    padding: SPACING.md,
+    padding: SPACING.lg,
     borderRadius: 12,
     gap: SPACING.md,
     shadowColor: '#000',
@@ -230,7 +230,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     borderRadius: 8,
     paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm
+    paddingVertical: SPACING.md,
+    minHeight: 50
   },
   searchInput: {
     flex: 1,
@@ -258,71 +259,77 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#F5F5F5',
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.md,
     borderBottomWidth: 2,
-    borderBottomColor: COLORS.border
+    borderBottomColor: COLORS.border,
+    minHeight: 56
   },
   headerCell: {
-    fontSize: FONTS.sizes.sm,
+    fontSize: FONTS.sizes.md,
     fontWeight: 'bold',
     color: COLORS.text
   },
   tableRow: {
     flexDirection: 'row',
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.md,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray,
     alignItems: 'center',
-    minHeight: 60
+    minHeight: 80
   },
   tableRowEven: {
     backgroundColor: '#FAFAFA'
   },
   cell: {
-    fontSize: FONTS.sizes.sm,
+    fontSize: FONTS.sizes.md,
     color: COLORS.text
   },
   rollNoCell: {
     width: '18%',
-    paddingRight: 6
+    paddingRight: SPACING.sm
   },
   nameCell: {
     width: '35%',
-    paddingRight: 6
+    paddingRight: SPACING.sm
+  },
+  nameColumn: {
+    gap: 6
   },
   attendanceCell: {
     width: '17%',
     textAlign: 'center'
   },
   statusCell: {
-    width: '30%',
-    alignItems: 'center'
+    width: '30%'
+  },
+  statusColumn: {
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   studentName: {
-    fontSize: FONTS.sizes.sm,
+    fontSize: FONTS.sizes.md,
     fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: 4
+    color: COLORS.text
   },
   studentClass: {
-    fontSize: 10,
+    fontSize: FONTS.sizes.xs,
     color: COLORS.darkGray
   },
   attendanceValue: {
     fontWeight: 'bold',
     color: COLORS.accent,
-    fontSize: FONTS.sizes.md
+    fontSize: FONTS.sizes.lg
   },
   attendanceValueLow: {
     color: COLORS.danger
   },
   statusPill: {
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: 6,
-    borderRadius: 12,
-    minWidth: 75,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: 16,
+    minWidth: 85,
     alignItems: 'center'
   },
   statusPillGreen: {
@@ -332,7 +339,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.danger
   },
   statusText: {
-    fontSize: 11,
+    fontSize: FONTS.sizes.sm,
     fontWeight: 'bold',
     color: COLORS.white
   },
