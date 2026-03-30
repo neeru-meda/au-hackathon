@@ -2,8 +2,9 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface User {
   username: string;
-  role: 'Teacher' | 'Admin';
+  role: 'Teacher' | 'Admin' | 'Clerk' | 'Student';
   name: string;
+  rollNo?: string;
 }
 
 interface UserContextType {

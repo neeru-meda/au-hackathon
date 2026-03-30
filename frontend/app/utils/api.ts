@@ -49,6 +49,26 @@ export const letterAPI = {
   generate: async (rollNo: string, documentType: string) => {
     const response = await api.post('/letters/generate', { rollNo, documentType });
     return response.data;
+  },
+  generateFull: async (rollNo: string, docType: string, requestId?: string) => {
+    const response = await api.post('/letters/generate-full', { rollNo, docType, requestId });
+    return response.data;
+  },
+  createRequest: async (rollNo: string, docType: string) => {
+    const response = await api.post('/letters/request', { rollNo, docType });
+    return response.data;
+  },
+  getRequests: async () => {
+    const response = await api.get('/letters/requests');
+    return response.data;
+  },
+  updateRequest: async (requestId: string, data: any) => {
+    const response = await api.put(`/letters/requests/${requestId}`, data);
+    return response.data;
+  },
+  verify: async (token: string) => {
+    const response = await api.get(`/letters/verify/${token}`);
+    return response.data;
   }
 };
 
@@ -64,12 +84,37 @@ export const analyticsAPI = {
   semesterWise: async () => {
     const response = await api.get('/analytics/semester-wise');
     return response.data;
+  },
+  atRisk: async () => {
+    const response = await api.get('/analytics/at-risk');
+    return response.data;
   }
 };
 
 export const seedAPI = {
   seedData: async () => {
     const response = await api.post('/seed-data');
+    return response.data;
+  }
+};
+
+export const auditAPI = {
+  getLog: async () => {
+    const response = await api.get('/audit-log');
+    return response.data;
+  }
+};
+
+export const studentManageAPI = {
+  addStudent: async (data: any) => {
+    const response = await api.post('/students', data);
+    return response.data;
+  }
+};
+
+export const attendanceSyncAPI = {
+  bulkSync: async (items: any[]) => {
+    const response = await api.post('/attendance/bulk-sync', items);
     return response.data;
   }
 };

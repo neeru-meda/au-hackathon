@@ -43,8 +43,15 @@ export default function LoginScreen() {
       if (response.success) {
         // Store user in context
         setUser(response.user);
-        // Navigate to appropriate dashboard
-        router.replace('/(tabs)/dashboard');
+        // Navigate to appropriate dashboard based on role
+        const role = response.user.role;
+        if (role === 'Clerk') {
+          router.replace('/(clerk)/scan');
+        } else if (role === 'Student') {
+          router.replace('/(student)/attendance');
+        } else {
+          router.replace('/(tabs)/dashboard');
+        }
       } else {
         Alert.alert('Error', response.message);
       }
@@ -122,6 +129,8 @@ export default function LoginScreen() {
             <Text style={styles.hintText}>Demo Credentials:</Text>
             <Text style={styles.hintText}>Teacher: teacher / teacher123</Text>
             <Text style={styles.hintText}>Admin: admin / admin123</Text>
+            <Text style={styles.hintText}>Clerk: clerk / clerk123</Text>
+            <Text style={styles.hintText}>Student: R001 / student123</Text>
           </View>
 
           {/* Footer */}
