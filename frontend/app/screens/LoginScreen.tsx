@@ -24,7 +24,6 @@ export default function LoginScreen() {
   const { setUser } = useUser();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState('Teacher');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -105,31 +104,6 @@ export default function LoginScreen() {
             />
           </View>
 
-          {/* Role Selector */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Role</Text>
-            <View style={styles.roleRow}>
-              <TouchableOpacity 
-                style={styles.roleOption} 
-                onPress={() => setSelectedRole('Teacher')}
-              >
-                <View style={[styles.radioOuter, selectedRole === 'Teacher' && styles.radioOuterActive]}>
-                  {selectedRole === 'Teacher' && <View style={styles.radioInner} />}
-                </View>
-                <Text style={styles.roleText}>Teacher</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.roleOption} 
-                onPress={() => setSelectedRole('Admin')}
-              >
-                <View style={[styles.radioOuter, selectedRole === 'Admin' && styles.radioOuterActive]}>
-                  {selectedRole === 'Admin' && <View style={styles.radioInner} />}
-                </View>
-                <Text style={styles.roleText}>Admin</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Login Button */}
           <TouchableOpacity
             style={styles.loginButton}
@@ -142,6 +116,13 @@ export default function LoginScreen() {
               <Text style={styles.loginButtonText}>Login</Text>
             )}
           </TouchableOpacity>
+
+          {/* Demo Credentials */}
+          <View style={styles.credentialsHint}>
+            <Text style={styles.hintText}>Demo Credentials:</Text>
+            <Text style={styles.hintText}>Teacher: teacher / teacher123</Text>
+            <Text style={styles.hintText}>Admin: admin / admin123</Text>
+          </View>
 
           {/* Footer */}
           <Text style={styles.footerText}>Andhra University - CSSE Department</Text>
@@ -164,9 +145,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 20,
-    paddingHorizontal: SPACING.lg,
-    paddingTop: 32,
-    paddingBottom: 24,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
@@ -175,27 +156,27 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.md
+    marginBottom: 8
   },
   logoImage: {
-    width: 90,
-    height: 90
+    width: 72,
+    height: 72
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
     color: COLORS.primary,
     textAlign: 'center',
-    marginBottom: 4
+    marginBottom: 2
   },
   subtitle: {
-    fontSize: FONTS.sizes.md,
+    fontSize: FONTS.sizes.sm,
     color: COLORS.darkGray,
     textAlign: 'center',
-    marginBottom: 28
+    marginBottom: 20
   },
   inputContainer: {
-    marginBottom: SPACING.lg
+    marginBottom: 14
   },
   label: {
     fontSize: FONTS.sizes.md,
@@ -207,62 +188,41 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 10,
-    padding: SPACING.md,
+    padding: 12,
     fontSize: FONTS.sizes.md,
     backgroundColor: COLORS.white,
     color: COLORS.text,
-    minHeight: 50
-  },
-  roleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 32
-  },
-  roleOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingVertical: 4
-  },
-  radioOuter: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: COLORS.darkGray,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  radioOuterActive: {
-    borderColor: COLORS.primary
-  },
-  radioInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: COLORS.primary
-  },
-  roleText: {
-    fontSize: FONTS.sizes.md,
-    color: COLORS.text
+    minHeight: 46
   },
   loginButton: {
     backgroundColor: COLORS.primary,
-    padding: SPACING.md,
+    padding: 14,
     borderRadius: 12,
     alignItems: 'center',
-    marginTop: SPACING.sm,
-    minHeight: 52
+    marginTop: 4,
+    minHeight: 48
   },
   loginButtonText: {
     fontSize: FONTS.sizes.lg,
     fontWeight: 'bold',
     color: COLORS.white
   },
+  credentialsHint: {
+    marginTop: 14,
+    padding: 10,
+    backgroundColor: '#F8F8F8',
+    borderRadius: 8
+  },
+  hintText: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.darkGray,
+    textAlign: 'center',
+    marginVertical: 1
+  },
   footerText: {
     fontSize: FONTS.sizes.sm,
     color: COLORS.darkGray,
     textAlign: 'center',
-    marginTop: 20
+    marginTop: 14
   }
 });
