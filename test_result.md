@@ -190,6 +190,132 @@ backend:
       - working: true
         agent: "testing"
         comment: "Creates 30 students successfully, handles duplicates, generates alerts for <75% attendance"
+      - working: "NA"
+        agent: "main"
+        comment: "Updated seed to include username/password fields for student login, also clears letterRequests and auditLog collections"
+      - working: true
+        agent: "testing"
+        comment: "Updated seed working perfectly. Creates 30 students with username/password fields, clears letterRequests and auditLog collections. Generated 4 alerts for students with <75% attendance."
+
+  - task: "Clerk & Student Login Support"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added clerk (clerk/clerk123) and student login. Student login matches against students collection using username field (last 4 digits of rollNo) and password student123"
+      - working: true
+        agent: "testing"
+        comment: "Clerk login working perfectly (clerk/clerk123 → role Clerk). Student login working (R001 → username R001, password student123 → role Student with rollNo). Invalid credentials properly rejected."
+
+  - task: "Add Student API (POST /api/students)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/students - validates rollNo duplicate, email format. Creates student with attendance 0, hasOutstandingDues false, username from last 4 digits of rollNo"
+      - working: true
+        agent: "testing"
+        comment: "Add student API working perfectly. Creates student with attendance 0%, hasOutstandingDues false, generates username from last 4 digits of rollNo, password student123. Properly validates duplicate rollNo and bad email format."
+
+  - task: "Letter Request System (POST/GET/PUT /api/letters/requests)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Full CRUD: POST /api/letters/request creates request in Queue status, GET /api/letters/requests returns all, PUT /api/letters/requests/{id} handles Approved/Rejected/Collected with verify token generation"
+      - working: true
+        agent: "testing"
+        comment: "Letter request system fully functional. POST creates request in Queue status, GET returns all requests, PUT handles Approved/Rejected status with verify token generation and rejection reasons. Eligibility check working (rejects students with <75% attendance)."
+
+  - task: "Letter Generate with QR (POST /api/letters/generate-full)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Generates full HTML certificate with QR code embedded as base64. Uses python-qrcode. Returns {html, filename, verifyToken}"
+      - working: true
+        agent: "testing"
+        comment: "Letter generation with QR working perfectly. Generates full HTML certificate with embedded QR code (data:image/png;base64), returns html, filename, and verifyToken. QR code contains verification URL."
+
+  - task: "QR Verification (GET /api/letters/verify/{token})"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "No auth required. Returns valid:true with student details if token found, valid:false otherwise"
+      - working: true
+        agent: "testing"
+        comment: "QR verification working perfectly. No auth required. Valid tokens return valid:true with student details (name, rollNo, docType, approvedBy, approvedAt). Invalid tokens return valid:false."
+
+  - task: "Bulk Sync Attendance (POST /api/attendance/bulk-sync)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Accepts array of offline attendance records. Checks duplicates by subject+date, inserts new ones, recalculates student percentages, returns synced/skipped arrays"
+      - working: true
+        agent: "testing"
+        comment: "Bulk sync attendance working perfectly. Accepts JSON array directly, checks duplicates by subject+date, returns synced/skipped arrays with localId. Recalculates student attendance percentages and creates alerts for students below 75%."
+
+  - task: "Predictive At-Risk Analytics (GET /api/analytics/at-risk)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Analyzes recent 14-day attendance trends, projects future rates, identifies students at risk of falling below 75%"
+      - working: true
+        agent: "testing"
+        comment: "At-risk analytics working correctly. Returns atRiskStudents array with rollNo, name, currentPercent, projectedPercent, and subjectsAtRisk. Found 24 at-risk students with proper data structure."
+
+  - task: "Audit Log System (GET /api/audit-log)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "write_audit helper called from login, attendance, alerts, letters, add student endpoints. GET /api/audit-log returns last 200 entries sorted newest first"
+      - working: true
+        agent: "testing"
+        comment: "Audit log system working perfectly. All expected actions logged: LOGIN, ADD_STUDENT, LETTER_REQUESTED, LETTER_APPROVED, LETTER_GENERATED, ATTENDANCE_SYNCED. Returns logs array sorted newest first with proper actor, action, and detail information."
 
 frontend:
   - task: "Login Screen"
@@ -284,17 +410,16 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Backend APIs - COMPLETED"
-    - "Frontend UI - Awaiting user approval for testing"
+    - "All Phase 1 backend testing completed successfully"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "Backend testing completed successfully. All 20 tests passed. Authentication, student management, attendance tracking with business rules, alerts, letter generation, and analytics are fully functional."
+    message: "Phase 1 backend foundation implemented. Added 9 new features: clerk/student login, add student API, letter request CRUD, letter generate with QR code, QR verification (no auth), bulk sync attendance, at-risk analytics, audit log. All endpoints need testing. Seed data must be run first (POST /api/seed-data). Test credentials: teacher/teacher123, admin/admin123, clerk/clerk123. For student login: use last 4 digits of any rollNo as username + password 'student123'. Important: POST /api/attendance/bulk-sync accepts a JSON array of items directly."
   - agent: "testing"
-    message: "Backend 100% functional. Database seeding creates 30 students with varied attendance. Business rule engine correctly identifies shortage students (<75%) and creates alerts. All CRUD operations working."
+    message: "Comprehensive Phase 1 backend testing completed with 100% success rate (24/24 tests passed). All new features working perfectly: clerk/student login, add student API with validation, letter request system with eligibility checks, QR generation and verification, bulk sync attendance with duplicate detection, at-risk analytics, and audit logging. Backend is production-ready."
 
 test_credentials:
   teacher:
