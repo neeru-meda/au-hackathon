@@ -129,7 +129,7 @@ Data Layer (MongoDB)
 
 ### Login
 
-<img src="assets/screenshots/login.jpeg" alt="AcadEase 360 login screen with role-based demo credentials" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/login.jpeg" alt="AcadEase 360 login screen with role-based demo credentials" width="180" />
 
 > Role-based login — Teacher, Admin/HOD, Clerk, and Student each get a tailored dashboard after authentication.
 
@@ -137,7 +137,7 @@ Data Layer (MongoDB)
 
 ### HOD Dashboard & Analytics
 
-<img src="assets/screenshots/dashboard.jpeg" alt="HOD dashboard showing student count, eligibility, shortage, and average attendance" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/dashboard.jpeg" alt="HOD dashboard showing student count, eligibility, shortage, and average attendance" width="180" />
 
 > At a glance: 30 students · 26 eligible · 4 on shortage · 85.7% avg attendance. Analytics tab breaks it down by eligibility, day, and subject.
 
@@ -145,7 +145,7 @@ Data Layer (MongoDB)
 
 ### Student Records & Shortage Alerts
 
-<img src="assets/screenshots/students.jpeg" alt="Students directory with search, class filter, and attendance eligibility status" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/students.jpeg" alt="Students directory with search, class filter, and attendance eligibility status" width="180" />
 
 > Search and filter all students by name or roll number. Alerts tab auto-flags anyone below the 75% threshold — one tap sends an SMS via Twilio.
 
@@ -153,7 +153,7 @@ Data Layer (MongoDB)
 
 ### Take Attendance
 
-<img src="assets/screenshots/attendance.jpeg" alt="Teacher attendance marking screen with class, subject, date, and present absent counts" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/attendance.jpeg" alt="Teacher attendance marking screen with class, subject, date, and present absent counts" width="180" />
 
 > Teachers select class, subject, date and period — then mark each student present or absent. Works fully **offline**, syncs automatically on reconnect.
 
@@ -161,7 +161,7 @@ Data Layer (MongoDB)
 
 ### Auto-Generated Certificate (PDF)
 
-<img src="assets/screenshots/generate.jpeg" alt="Generated internship permission letter preview on official AU format" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/generate.jpeg" alt="Generated internship permission letter preview on official AU format" width="180" />
 
 > Official AU letterhead, auto-populated with student data, date-stamped and QR-verified. Ready to print in minutes — no clerk drafting needed.
 
@@ -169,7 +169,7 @@ Data Layer (MongoDB)
 
 ## 🌐 Offline-First Design
 
-<img src="assets/screenshots/letters.jpeg" alt="Student certificate request flow with request bottom sheet" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/letters.jpeg" alt="Student certificate request flow with request bottom sheet" width="180" />
 
 Built for real classroom conditions — poor network environments included.
 
@@ -181,7 +181,7 @@ Built for real classroom conditions — poor network environments included.
 
 ## 🎨 Design Identity
 
-<img src="assets/screenshots/colors.jpeg" alt="AcadEase 360 visual identity collage and app interface previews" style="max-width: 240px; width: 100%; height: auto;" />
+<img src="assets/screenshots/colors.jpeg" alt="AcadEase 360 visual identity collage and app interface previews" width="180" />
 
 
 The UI uses Andhra University's centenary color palette:
