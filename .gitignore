@@ -83,6 +83,10 @@ android-sdk/-e
 # Environment files
 *.env
 *.env.*
+
+# Local Expo workspace metadata and accidental root lockfile
+.expo/
+/package-lock.json
 -e 
 # Environment files
 *.env
